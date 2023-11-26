@@ -1,10 +1,9 @@
-import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
 
-        Scanner scanner = new Scanner(System.in);
+     final Scanner scanner = new Scanner(System.in);
 
         System.out.println("Введите число от 1 до 5:");
         int number = scanner.nextInt();
@@ -20,7 +19,7 @@ public class Main {
         } else if (number == 5) {
             addOrSubtractAndPrint(scanner.nextInt(), scanner.nextInt(), scanner.nextBoolean());
         } else {
-            System.out.println("Некорректный выбор.");
+            System.out.println("Некорректное значение, введите число от 1 до 5:");
         }
     }
 
