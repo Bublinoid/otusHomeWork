@@ -5,7 +5,7 @@ public class Main {
 
      final Scanner scanner = new Scanner(System.in);
 
-        System.out.println("Введите число от 1 до 5:");
+        System.out.println("Введите число от 1 до 5:"); //
         int number = scanner.nextInt();
 
         if (number == 1) {
