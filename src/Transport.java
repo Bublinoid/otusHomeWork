@@ -1,2 +1,5 @@
-package PACKAGE_NAME;public class Transport {
+interface Transport {
+    String getType();
+
+    boolean move(int distance, TerrainType terrainType);
 }
