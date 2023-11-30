@@ -18,11 +18,11 @@ public class Animal {
         double time = distance / speedRunning;
         if (endurance >= distance) {
             endurance -= distance;
-            System.out.println(name + " пробежало " + distance + " метров за " + time + " секунд");
+            System.out.println(name + " пробежал " + distance + " метров за " + time + " секунд");
 
         } else {
 
-            System.out.println(name + " устало и не может пробежать " + distance + " метров");
+            System.out.println(name + " устал и не может пробежать " + distance + " метров");
             endurance = 0;
         }
     }
