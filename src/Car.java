@@ -1,6 +1,7 @@
 public class Car implements Transport {
     private int fuel;
 
+
     public Car(int initialFuel) {
         this.fuel = initialFuel;
     }
