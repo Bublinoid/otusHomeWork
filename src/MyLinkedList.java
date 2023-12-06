@@ -19,7 +19,6 @@ public class MyLinkedList<T> {
 
         if (head == null) {
             head = tail = newNode;
-
         } else {
             newNode.next = head;
             head = newNode;
@@ -41,19 +40,11 @@ public class MyLinkedList<T> {
     }
 
     public T getFirst() {
-
-        if (head == null) {
-            throw new IllegalStateException("Список пуст");
-        }
-        return head.data;
+        return head != null ? head.data : null;
     }
 
     public T getLast() {
-
-        if (tail == null) {
-            throw new IllegalStateException("Список пуст");
-        }
-        return tail.data;
+        return tail != null ? tail.data : null;
     }
 
     public void add(int position, T data) {
@@ -84,7 +75,7 @@ public class MyLinkedList<T> {
     public T remove(int position) {
 
         if (position < 0 || position >= size) {
-            throw new IllegalStateException("Недопустимая позиция");
+            return null;
         }
         T removedData;
 
@@ -113,9 +104,8 @@ public class MyLinkedList<T> {
     }
 
     public T get(int position) {
-
         if (position < 0 || position >= size) {
-            throw new IllegalStateException("Недопустимая позиция");
+            return null;
         }
         Node<T> current = head;
         for (int i = 0; i < position; i++) {

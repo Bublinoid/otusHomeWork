@@ -11,10 +11,6 @@ public class MyQueue<T> {
     }
 
     public T poll() {
-
-        if (linkedList.getSize() == 0) {
-            throw new IllegalStateException("Очередь пуста");
-        }
-        return linkedList.remove(0);
+        return linkedList.getSize() == 0 ? null : linkedList.remove(0);
     }
 }
