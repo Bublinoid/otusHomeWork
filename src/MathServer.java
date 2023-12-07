@@ -1,64 +1,78 @@
-import javax.imageio.IIOException;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class MathClient {
+public class MathServer {
+
+    public static void main(String[] args) {
+        startServer();
+    }
 
     public static void startServer() {
         try {
-            ServerSocket serverSocket = new ServerSocket(5432);
+            ServerSocket serverSocket = new ServerSocket(5555);
             System.out.println("Сервер запущен. Ожидание подключения...");
 
-        while (true) {
-            Socket clientSocket = serverSocket.accept();
-            System.out.println("Клиент подключен: " + clientSocket.getInetAddress().getHostAddress());
+            while (true) {
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("Клиент подключен: " + clientSocket.getInetAddress().getHostAddress());
 
-            BufferedReader on = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+                try (
+                        BufferedReader on = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                        PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)
+                ) {
+                    out.println("Вам доступны операции: сложение(+), вычитание(-), умножение(*), деление(/)");
 
-            out.println("Доступны операции: +, -, *, /");
+                    while (true) {
+                        String request = on.readLine();
+                        System.out.println("Клиент ввел: " + request);
 
-            String request = on.readLine();
-            System.out.println("Клиент: " + request);
+                        if (request == null || request.equalsIgnoreCase("exit")) {
+                            break;
+                        }
 
-            try {
-                String[] details = request.split(" ");
-                double operations = Double.parseDouble(details[0]);
-                char operations1 = details[1].charAt(0);
-                double operations2 = Double.parseDouble(details[2]);
+                        try {
+                            String[] details = request.split(" ");
+                            double operations1 = Double.parseDouble(details[0]);
+                            double operations2 = Double.parseDouble(details[2]);
+                            char operation = details[1].charAt(0);
 
-                double result = performTheOperation(operations, operations1, operations2);
-                out.println("Результат: " + result);
-            } catch (NumberFormatException | ArrayIndexOutOfBoundsException | ArithmeticException e) {
-                out.println("Ошибка. Введите корректное данные");
+                            double result = performOperation(operations1, operations2, operation);
+
+                            out.println("Результат вашей операции равен: " + result);
+                        } catch (NumberFormatException | ArrayIndexOutOfBoundsException | ArithmeticException e) {
+                            out.println("Ошибка. " + e.getMessage());
+                        }
+                    }
+                }
+
+                clientSocket.close();
             }
-            clientSocket.close();
-        }
 
-        } catch (IIOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static double performTheOperation(double operations, double operations1, char operations2) {
-        switch (operations2) {
+    private static double performOperation(double operations1, double operations2, char operation) {
+        switch (operation) {
             case '+':
-                return operations + operations1;
+                return operations1 + operations2;
             case '-':
-                return operations - operations1;
+                return operations1 - operations2;
             case '*':
-                return operations * operations1;
+                return operations1 * operations2;
             case '/':
-                if(operations1 != 0) {
-                    return operations / operations1;
+                if (operations2 != 0) {
+                    return operations1 / operations2;
                 } else {
-                    throw new ArithmeticException("Нельзя делить на нулл.");
+                    throw new ArithmeticException("Нельзя делить на нуль.");
                 }
             default:
-                throw new IllegalArgumentException("Такой операции нет:" + operations2);
+                throw new IllegalArgumentException("Такой операции нет: " + operation);
         }
     }
 }
