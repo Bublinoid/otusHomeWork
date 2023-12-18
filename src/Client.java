@@ -69,7 +69,7 @@ public class Client {
     public void disconnect() {
         try {
             System.out.println("Отключение");
-            Thread.sleep(100); // Добавим небольшую задержку перед отключением
+            Thread.sleep(100);
             if (socket != null && !socket.isClosed()) {
                 socket.close();
             }

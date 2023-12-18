@@ -72,7 +72,6 @@ public class Server {
         }
     }
 
-
     private void streaming(String message) {
         List<PrintWriter> clientsToRemove = new ArrayList<>();
 
