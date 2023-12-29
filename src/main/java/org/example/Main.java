@@ -9,7 +9,7 @@ public class Main {
             server.start();
         }).start();
 
-        Client tom = new Client("tom");
+        Client tom = new Client("tomi");
         tom.start();
 
         Scanner scanner = new Scanner(System.in);
