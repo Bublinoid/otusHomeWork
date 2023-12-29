@@ -1,3 +1,8 @@
+package org.example;
+
+import at.favre.lib.crypto.bcrypt.BCrypt;
+import org.example.ChatUser;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -33,6 +38,13 @@ public class Client {
             ChatUser.UserRole role = ChatUser.UserRole.valueOf(roleInput.toUpperCase());
             out.println(role);
 
+            String passwordRequest = in.nextLine();
+            System.out.println(passwordRequest);
+
+            String password = scanner.nextLine();
+
+            out.println(password);
+
             new Thread(() -> {
                 while (true) {
                     if (in.hasNextLine()) {
@@ -57,8 +69,6 @@ public class Client {
             e.printStackTrace();
         }
     }
-
-
 
     public void sendMessage(String message) {
         try {

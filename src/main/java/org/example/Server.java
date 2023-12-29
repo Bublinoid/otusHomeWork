@@ -1,3 +1,5 @@
+package org.example;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -36,40 +38,51 @@ public class Server {
         ) {
             String name = in.nextLine();
             ChatUser.UserRole userRole = ChatUser.UserRole.valueOf(in.nextLine());
-            ChatUser user = new ChatUser(name, out, userRole);
-            clients.put(name, user);
 
-            System.out.println(name + " присоединился с ролью " + userRole);
-            System.out.print("Введите сообщение (или /exit для выхода): ");
+            out.println("Введите пароль:");
 
-            while (true) {
-                try {
-                    String message = in.nextLine();
-                    if (message.startsWith("/w")) {
-                        String[] details = message.split(" ", 3);
-                        String recipient = details[1];
-                        String personalMessage = details[2];
-                        sendPersonalMessage(user, recipient, personalMessage.trim());
-                    } else if (message.startsWith("/kick") && user.getRole() == ChatUser.UserRole.ADMIN) {
-                        String[] details = message.split(" ", 2);
-                        String userToKick = details[1];
-                        kickUser(user, userToKick);
-                        streaming(user, userToKick + " был отключен администратором " + user.getName());
-                    } else {
-                        streaming(user, user.getName() + ": " + message);
+            String passwordHash = in.nextLine();
+
+            if (Authentication.authenticateUser(name, passwordHash)) {
+                ChatUser user = new ChatUser(name, out, userRole);
+                clients.put(name, user);
+
+                System.out.println(name + " присоединился с ролью " + userRole);
+                System.out.print("Введите сообщение (или /exit для выхода): ");
+
+                while (true) {
+                    try {
+                        String message = in.nextLine();
+                        if (message.startsWith("/w")) {
+                            String[] details = message.split(" ", 3);
+                            String recipient = details[1];
+                            String personalMessage = details[2];
+                            sendPersonalMessage(user, recipient, personalMessage.trim());
+                        } else if (message.startsWith("/kick") && user.getRole() == ChatUser.UserRole.ADMIN) {
+                            String[] details = message.split(" ", 2);
+                            String userToKick = details[1];
+                            kickUser(user, userToKick);
+                            streaming(user, userToKick + " был отключен администратором " + user.getName());
+                        } else {
+                            streaming(user, user.getName() + ": " + message);
+                        }
+
+                        System.out.print("Введите сообщение (или /exit для выхода): ");
+                    } catch (NoSuchElementException e) {
+                        clients.remove(name);
+                        System.out.println(name + " отключился");
+                        break;
                     }
-
-                    System.out.print("Введите сообщение (или /exit для выхода): ");
-                } catch (NoSuchElementException e) {
-                    clients.remove(name);
-                    System.out.println(name + " отключился");
-                    break;
                 }
+            } else {
+                System.out.println("Ошибка аутентификации для пользователя " + name);
+                out.println("Ошибка аутентификации. Проверьте учетные данные.");
             }
         } catch (IOException e) {
             System.err.println("Ошибка взаимодействия с клиентом");
         }
     }
+
 
 
     private void sendPersonalMessage(ChatUser sender, String recipient, String message) {
