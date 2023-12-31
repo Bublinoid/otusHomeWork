@@ -1,23 +1,23 @@
-import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
 
 public class Main {
     public static void main(String[] args) {
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
 
-       final Scanner scanner = new Scanner(System.in);
+        Semaphore semaphoreA = new Semaphore(1);
+        Semaphore semaphoreB = new Semaphore(0);
+        Semaphore semaphoreC = new Semaphore(0);
 
-        System.out.println("Введите имя файла: ");
-        String fileName = scanner.nextLine();
+        Runnable taskA = new PrintTask('A', 5, semaphoreA, semaphoreB);
+        Runnable taskB = new PrintTask('B', 5, semaphoreB, semaphoreC);
+        Runnable taskC = new PrintTask('C', 5, semaphoreC, semaphoreA);
 
-        System.out.println("Введите требуюмую последовательно символов: ");
-        String sequence = scanner.nextLine();
+        executorService.submit(taskA);
+        executorService.submit(taskB);
+        executorService.submit(taskC);
 
-        scanner.close();
-
-        FileOperations fileOperations = new FileOperations();
-        int character = fileOperations.characterCount(fileName, sequence);
-
-        System.out.println("Количество вхождений: " + character);
-
+        executorService.shutdown();
     }
 }
-
